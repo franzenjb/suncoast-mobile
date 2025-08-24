@@ -296,10 +296,8 @@ export default function HurricaneMapViewFixed() {
           {/* Storm Info */}
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
             <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Category 2</span>
-                <span className="text-sm text-gray-600">100 mph winds</span>
-              </div>
+              <div className="text-sm font-medium">Category 2</div>
+              <div className="text-sm text-gray-600">100 mph winds</div>
               <div className="text-xs text-gray-600">Moving NNE at 12 mph</div>
               <div className="text-xs text-gray-500">120 mi SW of Crystal River</div>
             </div>
