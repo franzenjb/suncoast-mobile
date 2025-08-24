@@ -8,7 +8,7 @@ import RiskHeatmap from './RiskHeatmap'
 import dynamic from 'next/dynamic'
 
 // Dynamically import the map to avoid SSR issues
-const HurricaneMapView = dynamic(() => import('./HurricaneMapView'), { 
+const HurricaneMapView = dynamic(() => import('./HurricaneMapViewFixed'), { 
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -108,14 +108,14 @@ export default function HurricaneTrackerEnhanced() {
   const [selectedCounty, setSelectedCounty] = useState('all')
   const [selectedRegion, setSelectedRegion] = useState('all')
   const [selectedRisk, setSelectedRisk] = useState('all')
-  const [filteredData, setFilteredData] = useState(branchData)
+  const [filteredData, setFilteredData] = useState(() => [...branchData].sort((a, b) => b.probability - a.probability))
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards')
   const [showDashboard, setShowDashboard] = useState(true)
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [mainView, setMainView] = useState<'dashboard' | 'map'>('dashboard')
+  const [mainView, setMainView] = useState<'dashboard' | 'map'>('map')
 
   useEffect(() => {
     let filtered = branchData
@@ -147,7 +147,8 @@ export default function HurricaneTrackerEnhanced() {
       }
     }
 
-    setFilteredData(filtered)
+    // Always sort by probability (highest first) for consistent rendering
+    setFilteredData(filtered.sort((a, b) => b.probability - a.probability))
   }, [searchTerm, selectedCounty, selectedRegion, selectedRisk])
 
   const handleRefresh = () => {
