@@ -1,10 +1,24 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Search, Filter, Wind, Clock, MapPin, AlertTriangle, Zap, Activity, Eye, TrendingUp, Shield, ChevronRight, X, Menu, Download, RefreshCw } from 'lucide-react'
+import { Search, Filter, Wind, Clock, MapPin, AlertTriangle, Zap, Activity, Eye, TrendingUp, Shield, ChevronRight, X, Menu, Download, RefreshCw, Map, List } from 'lucide-react'
 import DashboardStats from './DashboardStats'
 import Timeline from './Timeline'
 import RiskHeatmap from './RiskHeatmap'
+import dynamic from 'next/dynamic'
+
+// Dynamically import the map to avoid SSR issues
+const HurricaneMapView = dynamic(() => import('./HurricaneMapView'), { 
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="text-center">
+        <Wind className="h-12 w-12 text-blue-600 animate-spin mx-auto mb-4" />
+        <p className="text-gray-600">Loading Hurricane Map...</p>
+      </div>
+    </div>
+  )
+})
 
 interface Branch {
   branchNumber: number
@@ -101,6 +115,7 @@ export default function HurricaneTrackerEnhanced() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [mainView, setMainView] = useState<'dashboard' | 'map'>('dashboard')
 
   useEffect(() => {
     let filtered = branchData
@@ -167,8 +182,8 @@ export default function HurricaneTrackerEnhanced() {
     }
   }
 
-  const counties = [...new Set(branchData.map(b => b.county))].sort()
-  const regions = [...new Set(branchData.map(b => b.region))].sort()
+  const counties = Array.from(new Set(branchData.map(b => b.county))).sort()
+  const regions = Array.from(new Set(branchData.map(b => b.region))).sort()
 
   const exportData = () => {
     const csv = [
@@ -224,6 +239,22 @@ export default function HurricaneTrackerEnhanced() {
                 </div>
               </div>
               <div className="hidden md:flex items-center space-x-4">
+                <div className="flex items-center bg-white/10 rounded-lg p-1">
+                  <button
+                    onClick={() => setMainView('dashboard')}
+                    className={`px-3 py-1 rounded-md transition-all flex items-center ${mainView === 'dashboard' ? 'bg-white/20 text-white' : 'text-blue-200 hover:text-white'}`}
+                  >
+                    <List className="h-4 w-4 mr-1" />
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => setMainView('map')}
+                    className={`px-3 py-1 rounded-md transition-all flex items-center ${mainView === 'map' ? 'bg-white/20 text-white' : 'text-blue-200 hover:text-white'}`}
+                  >
+                    <Map className="h-4 w-4 mr-1" />
+                    Map
+                  </button>
+                </div>
                 <button
                   onClick={handleRefresh}
                   className={`p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all ${isRefreshing ? 'animate-spin' : ''}`}
@@ -280,9 +311,13 @@ export default function HurricaneTrackerEnhanced() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Dashboard Stats */}
-        {showDashboard && <DashboardStats branchData={branchData} />}
+      {/* Conditional View Rendering */}
+      {mainView === 'map' ? (
+        <HurricaneMapView />
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          {/* Dashboard Stats */}
+          {showDashboard && <DashboardStats branchData={branchData} />}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* Timeline */}
@@ -360,7 +395,7 @@ export default function HurricaneTrackerEnhanced() {
               <option value="all">All Risk Levels</option>
               <option value="high">High Risk (≥85%)</option>
               <option value="medium">Medium Risk (70-84%)</option>
-              <option value="low">Low Risk (<70%)</option>
+              <option value="low">Low Risk (&lt;70%)</option>
             </select>
 
             <button
@@ -515,6 +550,7 @@ export default function HurricaneTrackerEnhanced() {
           </div>
         )}
       </div>
+      )} {/* End of dashboard view */}
 
       {/* Branch Detail Modal */}
       {selectedBranch && (

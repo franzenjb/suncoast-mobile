@@ -147,8 +147,8 @@ export default function HurricaneTracker() {
     }
   }
 
-  const counties = [...new Set(branchData.map(b => b.county))].sort()
-  const regions = [...new Set(branchData.map(b => b.region))].sort()
+  const counties = Array.from(new Set(branchData.map(b => b.county))).sort()
+  const regions = Array.from(new Set(branchData.map(b => b.region))).sort()
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -224,7 +224,7 @@ export default function HurricaneTracker() {
               <option value="all">All Risk Levels</option>
               <option value="high">High Risk (≥85%)</option>
               <option value="medium">Medium Risk (70-84%)</option>
-              <option value="low">Low Risk (<70%)</option>
+              <option value="low">Low Risk (&lt;70%)</option>
             </select>
           </div>
 
