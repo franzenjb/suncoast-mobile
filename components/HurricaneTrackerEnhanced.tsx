@@ -243,18 +243,18 @@ export default function HurricaneTrackerEnhanced() {
               <div className="hidden md:flex items-center space-x-4">
                 <div className="flex items-center bg-white/10 rounded-lg p-1">
                   <button
-                    onClick={() => setMainView('dashboard')}
-                    className={`px-3 py-1 rounded-md transition-all flex items-center ${mainView === 'dashboard' ? 'bg-white/20 text-white' : 'text-blue-200 hover:text-white'}`}
-                  >
-                    <List className="h-4 w-4 mr-1" />
-                    Dashboard
-                  </button>
-                  <button
                     onClick={() => setMainView('map')}
                     className={`px-3 py-1 rounded-md transition-all flex items-center ${mainView === 'map' ? 'bg-white/20 text-white' : 'text-blue-200 hover:text-white'}`}
                   >
                     <Map className="h-4 w-4 mr-1" />
                     Map
+                  </button>
+                  <button
+                    onClick={() => setMainView('dashboard')}
+                    className={`px-3 py-1 rounded-md transition-all flex items-center ${mainView === 'dashboard' ? 'bg-white/20 text-white' : 'text-blue-200 hover:text-white'}`}
+                  >
+                    <List className="h-4 w-4 mr-1" />
+                    Dashboard
                   </button>
                   <button
                     onClick={() => setMainView('facility')}
