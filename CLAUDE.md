@@ -14,6 +14,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 The site is deployed to GitHub Pages at https://franzenjb.github.io/suncoast-mobile/
 - Production builds use `/suncoast-mobile` as basePath and assetPrefix (configured in next.config.js)
 - Static export is configured with `output: 'export'` for GitHub Pages compatibility
+- Deployment workflow: changes → `npm run build` → `npm run deploy` → live in 2-3 minutes
 
 ## Architecture
 
@@ -53,6 +54,7 @@ The application correctly models hurricane meteorology:
 - Crystal River and nearby branches have highest probabilities (88-92%)
 - Risk decreases with distance and position relative to storm track
 - Storm positioned at [26.8, -83.2], 120 miles SW of Crystal River
+- Branch risk values in `HurricaneMapViewFixed.tsx` have been corrected to reflect proper meteorology
 
 ### Key Data Structure
 
@@ -96,3 +98,15 @@ The project is configured for GitHub Pages deployment:
 - `components/HurricaneMapViewFixed.tsx` - Corrected map implementation with proper risk calculations
 - `next.config.js` - Contains GitHub Pages deployment configuration
 - `app/globals.css` - Includes critical Leaflet CSS imports
+
+## Known Issues and Fixes
+
+### Storm Info Display
+- The storm info panel in `HurricaneMapViewFixed.tsx` must display "Category 2" and "100 mph winds" on separate lines
+- Previously appeared as "Category 2100 mph winds" due to layout issues
+- Each storm detail should be in its own `<div>` element within a `space-y-1` container
+
+### Map Rendering
+- Map components must use dynamic imports with `ssr: false` to prevent hydration errors
+- Leaflet icon paths must be explicitly set in component initialization
+- Map defaults to showing Map view (not Dashboard) as per user preference
