@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Search, Filter, Wind, Clock, MapPin, AlertTriangle, Zap, Activity, Eye, TrendingUp, Shield, ChevronRight, X, Menu, Download, RefreshCw, Map, List } from 'lucide-react'
+import { Search, Filter, Wind, Clock, MapPin, AlertTriangle, Zap, Activity, Eye, TrendingUp, Shield, ChevronRight, X, Menu, Download, RefreshCw, Map, List, Database } from 'lucide-react'
 import DashboardStats from './DashboardStats'
 import Timeline from './Timeline'
 import RiskHeatmap from './RiskHeatmap'
+import FacilityDataManager from './FacilityDataManager'
 import dynamic from 'next/dynamic'
 
 // Dynamically import the map to avoid SSR issues
@@ -115,7 +116,7 @@ export default function HurricaneTrackerEnhanced() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(new Date())
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [mainView, setMainView] = useState<'dashboard' | 'map'>('map')
+  const [mainView, setMainView] = useState<'dashboard' | 'map' | 'facility'>('map')
 
   useEffect(() => {
     let filtered = branchData
@@ -255,6 +256,13 @@ export default function HurricaneTrackerEnhanced() {
                     <Map className="h-4 w-4 mr-1" />
                     Map
                   </button>
+                  <button
+                    onClick={() => setMainView('facility')}
+                    className={`px-3 py-1 rounded-md transition-all flex items-center ${mainView === 'facility' ? 'bg-white/20 text-white' : 'text-blue-200 hover:text-white'}`}
+                  >
+                    <Database className="h-4 w-4 mr-1" />
+                    Facility Data
+                  </button>
                 </div>
                 <button
                   onClick={handleRefresh}
@@ -315,6 +323,8 @@ export default function HurricaneTrackerEnhanced() {
       {/* Conditional View Rendering */}
       {mainView === 'map' ? (
         <HurricaneMapView />
+      ) : mainView === 'facility' ? (
+        <FacilityDataManager />
       ) : (
         <div className="max-w-7xl mx-auto px-4 py-6">
           {/* Dashboard Stats */}
